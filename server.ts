@@ -1,16 +1,20 @@
-import express, { Request, Response} from "express";
-import dotenv from 'dotenv'
+import express from "express";
+import dotenv from "dotenv";
 
-dotenv.config()
+import { AuthRouter } from "./src/auth/auth";
 
-const app = express()
-const PORT = process.env.PORT
-const URL = process.env.URL
+dotenv.config();
 
-app.get("/", (req: Request, res: Response) => {
-    res.json({message: "ok"})
-})
+const app = express();
+const PORT = process.env.PORT;
+const URL = process.env.URL;
+
+app.use(AuthRouter);
+
+app.all("*", (req, res) => {
+  res.status(404).json({ Error: "Resource Not Found" });
+});
 
 app.listen(PORT, () => {
-    console.log(`Server running on ${URL}`);
-})
+  console.log(`Server running on ${URL}`);
+});
