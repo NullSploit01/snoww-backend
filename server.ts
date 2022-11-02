@@ -3,6 +3,8 @@ import "express-async-errors";
 import cookieSession from "cookie-session";
 
 import { AuthRouter } from "./src/auth/auth";
+import { NotFoundError } from "./src/errors/not-found-error";
+import { errorHandler } from "./src/middlewares/error-handler";
 
 const server = express();
 server.set("trust proxy", true);
@@ -15,8 +17,10 @@ server.use(
 );
 server.use(AuthRouter);
 
-server.all("*", (req, res) => {
-  res.status(404).json({ Error: "Resource Not Found" });
+server.all("*", () => {
+  throw new NotFoundError();
 });
+
+server.use(errorHandler);
 
 export { server };

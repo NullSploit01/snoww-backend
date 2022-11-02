@@ -4,6 +4,8 @@ import { body } from "express-validator";
 
 import { User } from "../models/user";
 import { BadRequestError } from "../../errors/bad-request-error";
+import { validateRequest } from "../../middlewares/validate-request";
+
 const router = express.Router();
 
 router.post(
@@ -15,6 +17,7 @@ router.post(
       .isLength({ min: 4, max: 20 })
       .withMessage("Password must be between 4-20 characters"),
   ],
+  validateRequest,
   async (req: Request, res: Response) => {
     const { email, password } = req.body;
     const existingUser = await User.findOne({ email });
