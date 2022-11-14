@@ -10,7 +10,7 @@ const MONGOURI = process.env.MONGOURI;
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
-    throw new Error("JWT Key mus be defined");
+    throw new Error("JWT Key must be defined");
   }
 
   try {
@@ -21,7 +21,7 @@ const start = async () => {
   }
 
   server.listen(PORT, () => {
-    console.log(`ServerRunning on ${URL}`);
+    console.log(`Server Running on ${URL}`);
   });
 };
 
