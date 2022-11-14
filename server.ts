@@ -1,20 +1,25 @@
 import express from "express";
-import dotenv from "dotenv";
+import "express-async-errors";
+import cookieSession from "cookie-session";
 
 import { AuthRouter } from "./src/auth/auth";
+import { NotFoundError } from "./src/errors/not-found-error";
+import { errorHandler } from "./src/middlewares/error-handler";
+import { requireAuth } from "./src/middlewares/require-auth";
+const server = express();
+// server.set("trust proxy", true);
+server.use(express.json());
+server.use(
+  cookieSession({
+    signed: false,
+  })
+);
+server.use(AuthRouter);
 
-dotenv.config();
-
-const app = express();
-const PORT = process.env.PORT;
-const URL = process.env.URL;
-
-app.use(AuthRouter);
-
-app.all("*", (req, res) => {
-  res.status(404).json({ Error: "Resource Not Found" });
+server.all("*", () => {
+  throw new NotFoundError();
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on ${URL}`);
-});
+server.use(errorHandler);
+
+export { server };
